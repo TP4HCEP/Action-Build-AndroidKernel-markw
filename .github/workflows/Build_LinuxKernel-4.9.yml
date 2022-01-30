@@ -67,4 +67,5 @@ jobs:
           cd Upload
           md5sum ./* > md5.sum
           curl -sL https://git.io/file-transfer | sh
-          ./cowtransfer-uploader -s -p 8 ./Upload/*
+          ls -ln
+          ./cowtransfer-uploader -s -p 8 ./*
