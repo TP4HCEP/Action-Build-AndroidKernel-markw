@@ -66,6 +66,6 @@ jobs:
           mv ./out/arch/arm64/boot/Image.gz-dtb ./Upload
           cd Upload
           md5sum ./* > md5.sum
-          curl -sL https://git.io/file-transfer | sh
+          curl -sL https://git.io/cowtransfer | sh
           ls -ln
           ./cowtransfer-uploader -s -p 8 ./*
