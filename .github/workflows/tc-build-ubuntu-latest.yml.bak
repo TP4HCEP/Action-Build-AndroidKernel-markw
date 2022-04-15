@@ -1,0 +1,39 @@
+name: Debugging with SSH ubuntu-latest
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v1
+
+     - name: Initialization environment
+       run: |
+         sudo apt update && sudo apt upgrade -y
+         sudo apt install -y gcc g++ python make texinfo texlive bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev unzip language-pack-zh-hans
+
+     - name: Build cmake
+       run: |
+         cd $GITHUB_WORKSPACE
+         wget "https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1.tar.gz"
+         tar -xzvf cmake-3.23.1.tar.gz
+         cd cmake-3.23.1
+         mkdir build && cd build && cmake ..
+         make -j4 | tee $GITHUB_WORKSPACE/cmake.log
+         sudo make install
+
+     - name: Build tc-build
+       run: |
+         cd $GITHUB_WORKSPACE
+         bash "tc-build.sh"
+
+     - name: Start SSH via Ngrok
+       run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
+       env:
+        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+        USER_PASS: ${{ secrets.USER_PASS }}
+
+     - name: Don't kill instace
+       run: sleep 6h
+       
