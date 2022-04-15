@@ -1,4 +1,4 @@
-name: Debugging with SSH ubuntu-latest
+name: tc-build-ubuntu-latest
 on:
   workflow_dispatch:
 
