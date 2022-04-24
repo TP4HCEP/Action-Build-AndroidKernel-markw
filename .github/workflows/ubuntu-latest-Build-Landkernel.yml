@@ -1,0 +1,53 @@
+name: Debugging with SSH ubuntu-latest
+on:
+  workflow_dispatch:
+
+env:
+  workdir: $GITHUB_WORKSPACE
+  kerneldir: $GITHUB_WORKSPACE/land
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v1
+
+     - name: Updating container...
+       run: |
+         sudo apt update && sudo apt upgrade -y
+         sudo apt install -y --no-install-recommends git make bc bison openssl curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget device-tree-compiler ca-certificates python3 python2
+         sudo ln -sf /usr/bin/python3 /usr/bin/python
+         sudo apt install -y --no-install-recommends binutils binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi
+
+     - name: Clone Kernel and Google clang
+       run: |
+         cd $GITHUB_WORKSPACE
+         git clone --depth=1 https://github.com/PixelExperience-Devices/kernel_xiaomi_msm8937 ./land
+         wget "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-release/clang-r383902b.tar.gz" -O ./clang.tar.gz
+         mkdir ~/clang
+         tar -zxvf clang.tar.gz -C ~/clang
+         rm -rf clang.tar.gz
+
+     - name: Build Kernel
+       run: |
+         cd $GITHUB_WORKSPACE/land
+         export ARCH="arm64"
+         export SUBARCH="arm64"
+         export CLANG_TRIPLE="aarch64-linux-gnu-"
+         export CROSS_COMPILE="aarch64-linux-gnu-"
+         export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
+         arch_opts="ARCH=arm64 SUBARCH=arm64"
+         make_opts="CC=~/clang/bin/clang"
+         host_make_opts="HOSTCC=~/clang/bin/clang HOSTCXX=~/clang/bin/clang++"
+         make $arch_opts $make_opts $host_make_opts O=out land_defconfig
+         make $arch_opts $make_opts $host_make_opts -j$(nproc) O=out 2>&1
+
+     - name: Upload...
+       run: |
+         cd $GITHUB_WORKSPACE/land
+         curl -sL https://git.io/file-transfer | sh
+         ./transfer wet ./out/arch/arm64/boot/Image.gz-dtb
+
+
+
+
