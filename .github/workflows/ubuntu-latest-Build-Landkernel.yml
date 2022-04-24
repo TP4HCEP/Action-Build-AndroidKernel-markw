@@ -1,4 +1,4 @@
-name: Debugging with SSH ubuntu-latest
+name: Build LandKernel with ubuntu-latest
 on:
   workflow_dispatch:
 
@@ -18,15 +18,15 @@ jobs:
          sudo apt install -y --no-install-recommends git make bc bison openssl curl zip kmod cpio flex libelf-dev libssl-dev libtfm-dev wget device-tree-compiler ca-certificates python3 python2
          sudo ln -sf /usr/bin/python3 /usr/bin/python
          sudo apt install -y --no-install-recommends binutils binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi
+         sudo apt install -y --no-install-recommends clang-11 lld-11 llvm-11
+         sudo ln -sf /usr/bin/clang-11 /usr/bin/clang
+         sudo ln -sf /usr/bin/clang-11 /usr/bin/clang++
+         sudo ln -sf /usr/bin/ld.lld-11 /usr/bin/ld.lld
 
      - name: Clone Kernel and Google clang
        run: |
          cd $GITHUB_WORKSPACE
          git clone --depth=1 https://github.com/PixelExperience-Devices/kernel_xiaomi_msm8937 ./land
-         wget "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/android11-release/clang-r383902b.tar.gz" -O ./clang.tar.gz
-         mkdir ~/clang
-         tar -zxvf clang.tar.gz -C ~/clang
-         rm -rf clang.tar.gz
 
      - name: Build Kernel
        run: |
@@ -37,16 +37,17 @@ jobs:
          export CROSS_COMPILE="aarch64-linux-gnu-"
          export CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
          arch_opts="ARCH=arm64 SUBARCH=arm64"
-         make_opts="CC=~/clang/bin/clang"
-         host_make_opts="HOSTCC=~/clang/bin/clang HOSTCXX=~/clang/bin/clang++"
+         make_opts="CC=clang"
+         host_make_opts="HOSTCC=clang HOSTCXX=clang++"
          make $arch_opts $make_opts $host_make_opts O=out land_defconfig
-         make $arch_opts $make_opts $host_make_opts -j$(nproc) O=out 2>&1
+         make $arch_opts $make_opts $host_make_opts -j$(nproc) O=out 2>&1 | tee Build.log
 
      - name: Upload...
        run: |
          cd $GITHUB_WORKSPACE/land
          curl -sL https://git.io/file-transfer | sh
          ./transfer wet ./out/arch/arm64/boot/Image.gz-dtb
+         ./transfer wet ./Build.log
 
 
 
