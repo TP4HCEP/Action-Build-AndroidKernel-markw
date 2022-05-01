@@ -8,11 +8,8 @@ jobs:
     steps:
      - uses: actions/checkout@v1
 
-     - name: Env for DNA
+     - name: clone DNA
        run: |
-         sudo update && sudo upgrade -y
-         sudo apt install git cpio aria2 brotli android-sdk-libsparse-utils openjdk-11-jre p7zip-full -y
-         sudo apt install zip unzip gawk sed curl wget -y
          git clone https://gitee.com/sharpeter/DNA.git --depth=1 ~/DNA
          sudo chmod -R 0777 ~/DNA
 
