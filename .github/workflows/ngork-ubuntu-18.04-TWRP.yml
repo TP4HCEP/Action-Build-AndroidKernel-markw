@@ -1,4 +1,4 @@
-name: ssh connect with ubuntu-18.04 to build SHRP
+name: ssh connect with ubuntu-18.04 to build TWRP
 on:
   workflow_dispatch:
 
@@ -6,8 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-18.04
     steps:
-     - uses: actions/checkout@v1
-
      - name: Remove Useless Package
        run: |
          docker rmi `docker images -q`
@@ -27,15 +25,8 @@ jobs:
          remove-android: 'true'
          remove-haskell: 'true'
 
-     - name: Init Repo
-       run: |
-         mkdir ~/bin
-         curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-         chmod a+x ~/bin/repo
-         export PATH=~/bin:$PATH
-         git config --global user.email "mochen20070702@gmail.com"
-         git config --global user.name "mochenya"
-         repo --version
+     - name: Check Out
+       uses: actions/checkout@main
 
      - name: Initial build
        run: |
@@ -47,13 +38,24 @@ jobs:
          sudo bash setup/android_build_env.sh
          sudo bash setup/install_android_sdk.sh || true
 
+     - name: Initial Repo
+       run: |
+         mkdir ~/bin
+         curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+         chmod a+x ~/bin/repo
+         export PATH=~/bin:$PATH
+         git config --global user.email "mochen20070702@gmail.com"
+         git config --global user.name "mochenya"
+         repo --version
+         mkdir -p ${GITHUB_WORKSPACE}/TWRP && cd ${GITHUB_WORKSPACE}/TWRP
+         repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
+
      - name: Sync TWRP sources using a minimal manifest
        run: |
          export PATH=~/bin:$PATH
-         mkdir -p ${GITHUB_WORKSPACE}/SHRP
-         cd ${GITHUB_WORKSPACE}/SHRP
-         repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11
-         repo sync -j$(nproc --all) -c -j$(nproc --all) --force-sync --no-clone-bundle
+         cd ${GITHUB_WORKSPACE}/TWRP
+         repo sync -j$(nproc --all)
+         ls -la
          df -h
 
      - name: Start SSH via Ngrok
