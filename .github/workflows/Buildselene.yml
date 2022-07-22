@@ -1,4 +1,4 @@
-name: Make twrp-11
+name: Make OrangeFox 11.0
 
 on:
   workflow_dispatch:
@@ -49,11 +49,13 @@ jobs:
         cd ${GITHUB_WORKSPACE}/workspace
         git config --global user.name "Hikaru's Action-Build-Bot"
         git config --global user.email "Android@teio.tk"
-        repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-11
+        git clone https://gitlab.com/OrangeFox/sync.git
+        cd sync
+        sed -i "s/git clone/git clone --depth=1/g" orangefox_sync.sh
+        ./orangefox_sync.sh --branch 11.0 --path ${GITHUB_WORKSPACE}/workspace
     - name: Repo Sync
       run: |
         cd ${GITHUB_WORKSPACE}/workspace
-        repo sync -j$(nproc --all)
         ls -al
     - name: Repopick Patches
       run: |
