@@ -1,4 +1,4 @@
-name: ssh connect with ubuntu-18.04 to build OrangeFox
+name: ssh connect with ubuntu-18.04 to build SHRP
 on:
   workflow_dispatch:
 
@@ -37,7 +37,7 @@ jobs:
          git config --global user.name "mochenya"
          repo --version
 
-     - name: Initial build of OrangeFox
+     - name: Initial build
        run: |
          cd ${GITHUB_WORKSPACE}
          sudo apt update && sudo apt upgrade
@@ -47,13 +47,13 @@ jobs:
          sudo bash setup/android_build_env.sh
          sudo bash setup/install_android_sdk.sh || true
 
-     - name: Sync OrangeFox sources using a minimal manifest
+     - name: Sync SHRP sources using a minimal manifest
        run: |
          export PATH=~/bin:$PATH
-         cd ${GITHUB_WORKSPACE}
-         git clone --depth=1 https://gitlab.com/OrangeFox/sync.git
-         cd ${GITHUB_WORKSPACE}/sync
-         ./orangefox_sync.sh --branch 11.0 --path ${GITHUB_WORKSPACE}/fox
+         mkdir -p ${GITHUB_WORKSPACE}/SHRP
+         cd ${GITHUB_WORKSPACE}/SHRP
+         repo init -u https://github.com/SHRP/manifest.git -b v3_11.0 --depth=1
+         repo sync -j$(nproc --all) -c -j$(nproc --all) --force-sync --no-clone-bundle
          df -h
 
      - name: Start SSH via Ngrok
