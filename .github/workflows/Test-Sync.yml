@@ -1,4 +1,4 @@
-name: Make OrangeFox 11.0
+name: Test Sync
 
 on:
   workflow_dispatch:
@@ -16,6 +16,7 @@ jobs:
         sudo apt -y autoremove --purge
         sudo apt -y autoclean
         sudo apt clean
+
     - name: Maximize Build Space
       uses: easimon/maximize-build-space@master
       with:
@@ -43,25 +44,20 @@ jobs:
         cd scripts
         sudo bash setup/android_build_env.sh
         sudo bash setup/install_android_sdk.sh || true
+
     - name: Init Repo
       run: |
         mkdir ${GITHUB_WORKSPACE}/workspace
         cd ${GITHUB_WORKSPACE}/workspace
         git config --global user.name "Hikaru's Action-Build-Bot"
         git config --global user.email "Android@teio.tk"
-        git clone https://gitlab.com/OrangeFox/sync.git
+        git clone --depth=1 https://gitlab.com/OrangeFox/sync.git
         cd sync
         sed -i "s/git clone/git clone --depth=1/g" orangefox_sync.sh
         ./orangefox_sync.sh --branch 11.0 --path ${GITHUB_WORKSPACE}/workspace
-    - name: Repo Sync
+
+    - name: Test Repo Sync
       run: |
         cd ${GITHUB_WORKSPACE}/workspace
-        ls -al
-    - name: Repopick Patches
-      run: |
-        cd ${GITHUB_WORKSPACE}/workspace
-        source build/envsetup.sh
-    - name: Clone Device Tree
-      run: |
-        cd ${GITHUB_WORKSPACE}/workspace
+        ls -la
         df -h
