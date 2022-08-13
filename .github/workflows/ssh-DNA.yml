@@ -19,7 +19,7 @@ jobs:
     - name: 💥 Setup Env
       run: |
         sudo apt-get update && sudo apt-get upgrade
-        sudo apt-get install -y brotli cpio android-sdk-libsparse-utils e2fsprogs python-is-python3
+        sudo apt-get install -y brotli cpio android-sdk-libsparse-utils e2fsprogs python-is-python3 axel
         git clone --depth=1 https://github.com/CapShift/D.N.A-2.git -b x86_64 ~/DNA
         sudo chmod -R 0777 ~/DNA
 
