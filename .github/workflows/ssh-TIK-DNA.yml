@@ -1,0 +1,41 @@
+name: TIK tools (ssh connect)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: 💥 Set Swap Space
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 12
+
+    - name: 💥 Check Out
+      uses: actions/checkout@main
+
+    - name: 💥 TIK
+      run: |
+        sudo apt-get update && sudo apt-get upgrade
+        sudo apt-get install -y python3 simg2img img2simg cpio sed libnss3-tools python3-pip brotli curl bc cpio default-jre android-sdk-libsparse-utils openjdk-11-jre aria2 p7zip-full axel
+        sudo apt-get install -y brotli cpio android-sdk-libsparse-utils e2fsprogs python-is-python3 axel
+        git clone --depth=1 https://github.com/CapShift/D.N.A-2.git -b x86_64 ~/DNA
+        git clone --depth=1 https://gitee.com/yeliqin666/TIK.git ~/TIK
+        sudo chmod -R 0777 ~/DNA
+        sudo chmod -R 0777 ~/TIK
+        cd ~/TIK && ls -la *
+        start=$(sed -n "/更换北外大源.../=" ./run.sh) && end=$(expr $start + 4) && sed -i "$start,$end d" ./run.sh
+        sudo echo "alias dna=cd ~/DNA && python3 start.py" >> ~/.bashrc
+        sudo echo "alias tik=cd ~/TIK && sudo bash run.sh" >> ~/.bashrc
+        . ~/.bashrc && sudo . ~/bashrc
+
+    - name: 💥 Start SSH via Ngrok
+      run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
+      env:
+        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+        USER_PASS: ${{ secrets.USER_PASS }}
+
+    - name: 💥 Don't kill instace
+      run: sleep 6h
