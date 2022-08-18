@@ -27,8 +27,9 @@ jobs:
         sudo chmod -R 0777 ~/TIK
         cd ~/TIK && ls -la *
         start=$(sed -n "/更换北外大源.../=" ./run.sh) && end=$(expr $start + 4) && sed -i "$start,$end d" ./run.sh
-        sudo echo "alias dna=cd ~/DNA && python3 start.py" >> ~/.bashrc
-        sudo echo "alias tik=cd ~/TIK && sudo bash run.sh" >> ~/.bashrc
+        sudo echo -e "alias dna=\"cd ~/DNA && python3 start.py\"" >> ~/.bashrc
+        sudo echo -e "alias tik=\"cd ~/TIK && sudo bash run.sh\"" >> ~/.bashrc
+        sudo echo -e "alias cmd=\"sudo chmod -R 0777 ~/*\"" >> ~/.bashrc
         source ~/.bashrc
 
     - name: 💥 Start SSH via Ngrok
