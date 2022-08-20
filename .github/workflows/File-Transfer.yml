@@ -1,0 +1,46 @@
+name: File Transfer
+
+on:
+  workflow_dispatch:
+    inputs:
+      filelink:
+        description: 'filelink'
+        required: true
+        default: ''
+      filename:
+        description: 'filename'
+        required: true
+        default: ''
+      transfer:
+        description: 'transfer'
+        required: true
+        default: 'wet'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: 💥 Check Out
+      uses: actions/checkout@main
+
+    - name: 💥 Download File
+      run: |
+        sudo apt-get install -y axel
+        cd  ${GITHUB_WORKSPACE}
+        mkdir -p  ${GITHUB_WORKSPACE}/Upload
+        axel -n 8 "${{ github.event.inputs.filelink }}" -o "${GITHUB_WORKSPACE}/Upload/${{ github.event.inputs.filename }}"
+
+    - name: 💥 Get file sha256sum
+      run: |
+        cd ${GITHUB_WORKSPACE}/Upload
+        echo -e "############### start get file sha256sum ###############"
+        sha256sum *
+        echo -e "########################################################"
+
+    - name: 💥 Upload
+      run: |
+        cd ${GITHUB_WORKSPACE}
+        sudo chmod -R 0777 ${GITHUB_WORKSPACE}/*
+        curl -sL https://git.io/file-transfer | sh
+        ./transfer "${{ github.event.inputs.transfer }}" "${GITHUB_WORKSPACE}/Upload/${{ github.event.inputs.filename }}"
