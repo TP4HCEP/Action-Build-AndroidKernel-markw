@@ -19,9 +19,13 @@ jobs:
     - name: 💥 Setup Env
       run: |
         sudo apt-get update && sudo apt-get upgrade
-        sudo apt-get install -y brotli cpio android-sdk-libsparse-utils e2fsprogs python-is-python3 axel
+        sudo apt-get install -y python3 simg2img img2simg cpio sed libnss3-tools python3-pip brotli curl bc cpio default-jre android-sdk-libsparse-utils openjdk-11-jre aria2 p7zip-full axel
+        sudo apt-get install -y brotli cpio android-sdk-libsparse-utils e2fsprogs python-is-python3 file
         git clone --depth=1 https://github.com/CapShift/D.N.A-2.git -b x86_64 ~/DNA
         sudo chmod -R 0777 ~/DNA
+        sudo echo -e "alias dna=\"cd ~/DNA && python3 start.py\"" >> ~/.bashrc
+        sudo echo -e "alias cmd=\"sudo chmod -R 0777 ~/*\"" >> ~/.bashrc
+        source ~/.bashrc
 
     - name: 💥 Start SSH via Ngrok
       run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
