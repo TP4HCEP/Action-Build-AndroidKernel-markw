@@ -1,0 +1,37 @@
+name: Download Videos (ssh connect)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 💥 Check Out
+      uses: actions/checkout@main
+
+    - name: 💥 Setup Env
+      run: |
+        sudo apt-get update -y && sudo apt-get upgrade -y
+        sudo apt-get install -y python3 python3-pip curl aria2 p7zip-full axel python-is-python3 ffmpeg
+
+    - name: 💥 Install you-get
+      run: |
+        pip3 install you-get
+        you-get --version
+        
+    - name: 💥 Install youtube-dl
+      run: |
+        sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+        sudo chmod a+rx /usr/local/bin/youtube-dl
+        youtube-dl --version
+        
+    - name: 💥 Start SSH via Ngrok
+      run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
+      env:
+        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+        USER_PASS: ${{ secrets.USER_PASS }}
+
+    - name: 💥 Don't kill instace
+      run: sleep 6h
