@@ -15,8 +15,22 @@ jobs:
       run: |
         sudo apt update && sudo apt upgrade -y
         sudo apt install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python-is-python3
-        sudo apt install -y bc bison build-essential curl flex g++-multilib gcc-multilib git gnupg gperf libxml2 lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libwxgtk3.0-gtk3-dev imagemagick git lunzip lzop schedtool squashfs-tools xsltproc zip zlib1g-dev perl xmlstarlet virtualenv xz-utils rr jq libncurses5 pngcrush lib32ncurses5-dev git-lfs libxml2 openjdk-11-jdk-headless
+        sudo apt install -y bc bison build-essential curl flex g++-multilib gcc-multilib git gnupg gperf libxml2 lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libwxgtk3.0-gtk3-dev imagemagick git lunzip lzop schedtool squashfs-tools xsltproc zip zlib1g-dev perl xmlstarlet virtualenv xz-utils rr jq libncurses5 pngcrush lib32ncurses5-dev git-lfs libxml2 openjdk-11-jdk-headless axel
 
+    - name: 💥 Install 7-Zip and transfer
+      run: |
+        cd ${GITHUB_WORKSPACE}/workspace
+        mkdir -p 7-zip && cd 7-zip
+        wget "https://jaist.dl.sourceforge.net/project/sevenzip/7-Zip/22.01/7z2201-linux-x64.tar.xz" -O "7z2201-linux-x64.tar.xz"
+        sudo chmod 0777 "7z2201-linux-x64.tar.xz"
+        tar -xf "7z2201-linux-x64.tar.xz"
+        sudo chmod 0777 ./7zzs
+        sudo cp ./7zzs /usr/local/bin/7z
+        7z --help
+        cd /usr/local/bin
+        sudo curl -sL https://raw.githubusercontent.com/Mikubill/transfer/master/install.sh | bash
+        sudo chmod 0777 transfer
+        
     - name: 💥 Start SSH via Ngrok
       run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
       env:
