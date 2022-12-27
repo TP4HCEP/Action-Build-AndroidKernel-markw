@@ -19,6 +19,8 @@ jobs:
 
     - name: 💥 Install 7-Zip and transfer
       run: |
+        export HOME=${GITHUB_WORKSPACE}
+        mkdir -p ${GITHUB_WORKSPACE}/workspace
         cd ${GITHUB_WORKSPACE}/workspace
         mkdir -p 7-zip && cd 7-zip
         wget "https://jaist.dl.sourceforge.net/project/sevenzip/7-Zip/22.01/7z2201-linux-x64.tar.xz" -O "7z2201-linux-x64.tar.xz"
