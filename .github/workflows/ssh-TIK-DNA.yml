@@ -32,6 +32,20 @@ jobs:
         sudo echo -e "alias cmd=\"sudo chmod -R 0777 ~/*\"" >> ~/.bashrc
         source ~/.bashrc
 
+    - name: 💥 Install 7-Zip and transfer
+      run: |
+        cd ${GITHUB_WORKSPACE}/workspace
+        mkdir -p 7-zip && cd 7-zip
+        wget "https://jaist.dl.sourceforge.net/project/sevenzip/7-Zip/22.01/7z2201-linux-x64.tar.xz" -O "7z2201-linux-x64.tar.xz"
+        sudo chmod 0777 "7z2201-linux-x64.tar.xz"
+        tar -xf "7z2201-linux-x64.tar.xz"
+        sudo chmod 0777 ./7zzs
+        sudo cp ./7zzs /usr/local/bin/7z
+        7z --help
+        cd /usr/local/bin
+        sudo curl -sL https://raw.githubusercontent.com/Mikubill/transfer/master/install.sh | bash
+        sudo chmod 0777 transfer
+        
     - name: 💥 Start SSH via Ngrok
       run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
       env:
