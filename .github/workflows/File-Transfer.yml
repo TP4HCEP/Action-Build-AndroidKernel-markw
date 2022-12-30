@@ -42,5 +42,5 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}
         sudo chmod -R 0777 ${GITHUB_WORKSPACE}/*
-        curl -sL https://git.io/file-transfer | sh
+        curl -sL https://raw.githubusercontent.com/Mikubill/transfer/master/install.sh | bash
         ./transfer "${{ github.event.inputs.transfer }}" "${GITHUB_WORKSPACE}/Upload/${{ github.event.inputs.filename }}"
