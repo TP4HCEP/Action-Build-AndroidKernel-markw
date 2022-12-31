@@ -30,7 +30,7 @@ jobs:
         sudo cp ./7zzs /usr/local/bin/7z
         7z --help
         cd /usr/local/bin
-        sudo curl -sL https://raw.githubusercontent.com/Mikubill/transfer/master/install.sh | bash
+        sudo curl -sL "https://raw.githubusercontent.com/Mikubill/transfer/master/install.sh" | bash
         sudo chmod 0777 transfer
         
     - name: 💥 Start SSH via Ngrok
