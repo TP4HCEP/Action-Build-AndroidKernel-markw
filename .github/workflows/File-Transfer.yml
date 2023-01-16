@@ -26,10 +26,10 @@ jobs:
 
     - name: 💥 Download File
       run: |
-        sudo apt-get install -y axel
+        sudo apt-get install -y aria2
         cd  ${GITHUB_WORKSPACE}
         mkdir -p  ${GITHUB_WORKSPACE}/Upload
-        axel -n 16 "${{ github.event.inputs.filelink }}" -o "${GITHUB_WORKSPACE}/Upload/${{ github.event.inputs.filename }}"
+        aria2c -c -s 16 -d "${GITHUB_WORKSPACE}/Upload/${{ github.event.inputs.filename }}" "${{ github.event.inputs.filelink }}"
 
     - name: 💥 Get file sha256sum
       run: |
