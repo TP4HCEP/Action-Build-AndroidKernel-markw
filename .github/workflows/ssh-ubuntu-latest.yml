@@ -10,9 +10,7 @@ jobs:
     steps:
     - name: 💥 Check Out
       uses: actions/checkout@main
-
-    steps:
-    - uses: actions/checkout@v2
+      
     - uses: nttld/setup-ndk@v1
       id: setup-ndk
       with:
