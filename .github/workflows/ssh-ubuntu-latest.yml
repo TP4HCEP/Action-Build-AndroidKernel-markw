@@ -11,6 +11,17 @@ jobs:
     - name: 💥 Check Out
       uses: actions/checkout@main
 
+    steps:
+    - uses: actions/checkout@v2
+    - uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r25b
+        add-to-path: true
+    - run: ./build.sh
+      env:
+        ANDROID_NDK_HOME: ${GITHUB_WORKSPACE}/ndk
+
     - name: 💥 Setup env
       run: |
         sudo apt update && sudo apt upgrade -y
