@@ -15,10 +15,7 @@ jobs:
       id: setup-ndk
       with:
         ndk-version: r25b
-        add-to-path: true
-    - run: ./build.sh
-      env:
-        ANDROID_NDK_HOME: ${GITHUB_WORKSPACE}/ndk
+        add-to-path: false
 
     - name: 💥 Setup env
       run: |
