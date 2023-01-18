@@ -30,12 +30,13 @@ jobs:
         cd  ${GITHUB_WORKSPACE}
         mkdir -p  ${GITHUB_WORKSPACE}/Upload
         aria2c -c -s 16 -o "${GITHUB_WORKSPACE}/Upload/${{ github.event.inputs.filename }}" "${{ github.event.inputs.filelink }}"
+        ls -la "${GITHUB_WORKSPACE}/Upload"
 
     - name: 💥 Get file sha256sum
       run: |
         cd ${GITHUB_WORKSPACE}/Upload
         echo -e "############### start get file sha256sum ###############"
-        sha256sum *
+        sha256sum ./"${{ github.event.inputs.filename }}"
         echo -e "########################################################"
 
     - name: 💥 Upload
