@@ -21,6 +21,7 @@ jobs:
         git config --global user.email "mochen20070702@gmail.com"
         git config --global credential.helper store
         sudo timedatectl set-timezone Asia/Shanghai
+        sudo rm -rf /etc/localtime
         sudo cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
     - name: 💥 Install 7-Zip and transfer
