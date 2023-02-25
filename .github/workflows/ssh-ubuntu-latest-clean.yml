@@ -13,8 +13,6 @@ jobs:
 
     - name: 💥 Setup env
       run: |
-        sudo apt update && sudo apt upgrade -y
-        sudo apt remove nano -y
         git config --global user.name "mochenya"
         git config --global user.email "mochen20070702@gmail.com"
         git config --global credential.helper store
